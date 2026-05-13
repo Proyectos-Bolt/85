@@ -2530,10 +2530,15 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
                     Viviendas
                   </button>
                   <button
-                    onClick={() => setSelectedRutaCategory('tecnologico')}
+                    onClick={() => {
+                      setRouteBaseFare(70);
+                      setShowRutasModal(false);
+                      setSelectedRutaCategory(null);
+                      setSelectedDestino(null);
+                    }}
                     className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition duration-200"
                   >
-                    Tecnológico
+                    Tecnológico - $70 + $5/km (después de 5.1km)
                   </button>
                 </div>
               ) : selectedRutaCategory === 'viviendas' && !selectedDestino ? (
@@ -2658,21 +2663,6 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
                       <span className="text-green-400 font-bold">${opcion.costo}</span>
                     </button>
                   ))}
-                </div>
-              ) : selectedRutaCategory === 'tecnologico' ? (
-                <div className="space-y-2">
-                  <button
-                    onClick={() => {
-                      setTecnoBaseFare(70);
-                      setShowRutasModal(false);
-                      setSelectedRutaCategory(null);
-                      setSelectedDestino(null);
-                    }}
-                    className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-3 rounded-lg transition duration-200 text-left border border-gray-600 flex justify-between items-center"
-                  >
-                    <span>Tecnológico - $70 + $5/km (después de 5.1km)</span>
-                    <span className="text-green-400 font-bold">$70</span>
-                  </button>
                 </div>
               ) : (
                 <div className="space-y-2">

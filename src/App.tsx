@@ -2538,7 +2538,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
                     }}
                     className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition duration-200"
                   >
-                    Tecnológico - $70 + $5/km (después de 5.1km)
+                    Tecnológico
                   </button>
                 </div>
               ) : selectedRutaCategory === 'viviendas' && !selectedDestino ? (

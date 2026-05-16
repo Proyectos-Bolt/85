@@ -357,6 +357,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
   const [selectedRutaCategory, setSelectedRutaCategory] = useState<string | null>(null);
   const [selectedDestino, setSelectedDestino] = useState<string | null>(null);
   const [routeBaseFare, setRouteBaseFare] = useState<number | null>(null);
+  const [routeType, setRouteType] = useState<'tecnologico' | 'walmart' | null>(null);
 
   // Estados para contar usuarios registrados
   const [totalUsuarios, setTotalUsuarios] = useState<number>(0);
@@ -441,8 +442,15 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
     // Cálculo por distancia
     let fare = baseFareToUse;
 
-    // Si routeBaseFare está activo, el precio es fijo sin aumentos por distancia
-    if (routeBaseFare === null) {
+    // Si routeBaseFare está activo
+    if (routeBaseFare !== null) {
+      // Walmart: incremente $5 por km después de 4km
+      if (routeType === 'walmart' && distanceKm > 4) {
+        const extraKmAfter4 = distanceKm - 4;
+        fare += extraKmAfter4 * 5;
+      }
+      // Tecnológico: precio fijo sin aumentos (routeType === 'tecnologico')
+    } else {
       if (selectedTripType.id !== 'normal') {
         // Para viajes diferentes a "Viaje Normal": precio base + 10 MXN por km después de 5 km
         if (distanceKm > 5) {
@@ -468,7 +476,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
     }
 
     return accumulatedStopsCost + fare + (waitingMinutes * RATES.waitingRate) + petExtraFee + personasExtrasFee + tripTypeExtraFee;
-  }, [selectedTripType, selectedSubTrip, petConfig, servicioEspecialConfig, personasExtrasConfig, costoAcumuladoParadas, selectedSorianaZone, tarifaTipo, routeBaseFare]);
+  }, [selectedTripType, selectedSubTrip, petConfig, servicioEspecialConfig, personasExtrasConfig, costoAcumuladoParadas, selectedSorianaZone, tarifaTipo, routeBaseFare, routeType]);
   // NOTA: Se ha agregado 'costoAcumuladoParadas' y 'tarifaTipo' a las dependencias.
 
   // Formatear tiempo
@@ -707,6 +715,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
     setNumeroParadas(0);
     setTarifaTipo('normal');
     setRouteBaseFare(null);
+    setRouteType(null);
 
     lastPositionRef.current = currentPosition;
   };
@@ -2532,13 +2541,26 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
                   <button
                     onClick={() => {
                       setRouteBaseFare(70);
+                      setRouteType('tecnologico');
                       setShowRutasModal(false);
                       setSelectedRutaCategory(null);
                       setSelectedDestino(null);
                     }}
                     className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition duration-200"
                   >
-                    Tecnológico
+                    Tecnológico - $70 + $5/km (después de 5.1km)
+                  </button>
+                  <button
+                    onClick={() => {
+                      setRouteBaseFare(60);
+                      setRouteType('walmart');
+                      setShowRutasModal(false);
+                      setSelectedRutaCategory(null);
+                      setSelectedDestino(null);
+                    }}
+                    className="w-full bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-3 rounded-xl transition duration-200"
+                  >
+                    Walmart - $60 + $5/km (después de 4km)
                   </button>
                 </div>
               ) : selectedRutaCategory === 'viviendas' && !selectedDestino ? (

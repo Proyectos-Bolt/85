@@ -241,6 +241,39 @@ const isAdmin = false; // Comentar la verificación normal
 3. Agregar funcionalidades reales en los 3 botones
 4. Implementar RLS en Firestore para proteger datos admin
 
+## Rutas y Tarifas - Rutas Especiales
+
+### Rutas de Precio Fijo/Dinámico
+
+#### 1. Tecnológico
+- **Base:** $70
+- **Incremento:** $5 por km después de 5.1km
+- **Comportamiento:** Precio fijo hasta 5.1km, luego aumenta $5/km
+
+#### 2. Walmart
+- **Base:** $60
+- **Incremento:** $5 por km después de 4km
+- **Comportamiento:** Precio fijo hasta 4km, luego aumenta $5/km
+
+### Implementación Técnica
+
+**Archivo:** `App.tsx`
+
+**Estado:** `routeType` (línea 361)
+```typescript
+const [routeType, setRouteType] = useState<'tecnologico' | 'walmart' | null>(null);
+```
+
+**Botones de Rutas:** (línea 2530-2554)
+- Botón Tecnológico: `setRouteType('tecnologico')`
+- Botón Walmart: `setRouteType('walmart')`
+
+**Cálculo de Tarifa:** (línea 445-451)
+- Si `routeType === 'walmart'` y distancia > 4km: incremento de $5/km
+- Si `routeType === 'tecnologico'`: precio fijo sin incremento
+
+---
+
 ## Rutas y Tarifas - Viviendas
 
 ### Destinos Disponibles
@@ -445,6 +478,12 @@ const [tarifaTipo, setTarifaTipo] = useState<'normal' | 'especial' | 'soriana'>(
 ---
 
 ## Historial de Cambios
+
+### Versión 1.4 (2026-05-16)
+- Agregada ruta "Walmart" con tarifa base $60 + $5/km después de 4km
+- Agregado estado `routeType` para diferenciar entre rutas especiales
+- Modificada lógica de cálculo: Walmart aplica incremento por distancia, Tecnológico es fijo
+- Documentada nueva ruta en sección "Rutas de Precio Fijo/Dinámico"
 
 ### Versión 1.3 (2026-04-21)
 - Agregada opción "Saliendo de Soriana" como radio button en la sección Tipo de Tarifa
